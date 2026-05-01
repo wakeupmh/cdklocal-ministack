@@ -1,0 +1,16 @@
+services:
+  ministack:
+    image: ministackorg/ministack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      # docker mode allows Lambda containers to spin up inside MiniStack.
+      # With rootless Podman, expose the socket first:
+      #   systemctl --user start podman.socket
+      # then set DOCKER_HOST on the host before running compose:
+      #   export DOCKER_HOST=unix://${XDG_RUNTIME_DIR}/podman/podman.sock
+      LAMBDA_EXECUTOR: docker
+    volumes:
+      # Podman socket (rootless) — adjust path if using root Podman or Docker
+      - ${XDG_RUNTIME_DIR:-/run/user/1000}/podman/podman.sock:/var/run/docker.sock
