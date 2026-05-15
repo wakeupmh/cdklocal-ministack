@@ -48,14 +48,28 @@ npm install
 
 ### 4. Export local AWS credentials
 
+cdklocal needs both `AWS_ENDPOINT_URL` and `AWS_ENDPOINT_URL_S3` set:
+
 ```bash
 export AWS_ENDPOINT_URL=http://localhost:4566
+export AWS_ENDPOINT_URL_S3=http://s3.localhost.localstack.cloud:4566
 export AWS_DEFAULT_REGION=us-east-1
 export AWS_ACCESS_KEY_ID=test
 export AWS_SECRET_ACCESS_KEY=test
 ```
 
-### 5. Bootstrap and deploy
+### 5. Pre-pull the Lambda runtime image (workaround)
+
+MiniStack pulls `public.ecr.aws/lambda/nodejs:20` to run the Lambda. That
+registry tag is currently flaky; pre-pull the equivalent image from Docker
+Hub and re-tag it so MiniStack finds it locally:
+
+```bash
+podman pull amazon/aws-lambda-nodejs:20
+podman tag amazon/aws-lambda-nodejs:20 public.ecr.aws/lambda/nodejs:20
+```
+
+### 6. Bootstrap and deploy
 
 ```bash
 cdklocal bootstrap
